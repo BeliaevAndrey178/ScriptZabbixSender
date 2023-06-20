@@ -1,0 +1,84 @@
+#!/bin/bash
+HOST=$(hostname)
+zabbixserver="10.83.131.237"
+#########Checking if host's time server is up and running#########
+statOK1=OK
+#########Checking if webserver daemon is up and running#########
+statOK2=OK
+#########Checking if secured connectivity daemon is up and running#########
+statOK3=OK
+#########Checking Prime Network Web Server Status#########
+statOK4=UP
+#########Checking Compliance Engine Status#########
+statOK5=UP
+#########Checking for AVM11's status#########
+statOK6=OK
+#########Checking for AVM100's status#########
+statOK7=OK
+
+cd /export/home/pn400/
+su pn400 -c 'anactl status' > /script/nms/zabbix/statusAVM
+cd /script/nms/zabbix/
+#########Checking if host's time server is up and running#########
+STAT_SERVER1=$(cat statusAVM | grep 'time server is up and running' | awk -F '[' '{print $2}' | sed ' s/.$//')
+#########Checking if webserver daemon is up and running#########
+STAT_SERVER2=$(cat statusAVM | grep 'Checking if webserver daemon is up and running' | awk -F '[' '{print $2}' | sed ' s/.$//')
+#########Checking if secured connectivity daemon is up and running#########
+STAT_SERVER3=$(cat statusAVM | grep 'Checking if secured connectivity daemon is up and running' | awk -F '[' '{print $2}' | sed ' s/.$//')
+#########Checking Prime Network Web Server Status#########
+STAT_SERVER4=$(cat statusAVM | grep 'Checking Prime Network Web Server Status' | awk -F '[' '{print $2}' | sed ' s/.$//')
+#########Checking Compliance Engine Status#########
+STAT_SERVER5=$(cat statusAVM | grep 'Checking Compliance Engine Status' | awk -F '[' '{print $2}' | sed ' s/.$//')
+#########Checking for AVM11's status#########
+STAT_SERVER6=$(cat statusAVM | grep 'for AVM11' | awk -F '[' '{print $2}' | awk '{print $1}')
+#########Checking for AVM100's status#########
+STAT_SERVER7=$(cat statusAVM | grep 'for AVM100' | awk -F '[' '{print $2}' | awk '{print $1}')
+
+if [ $STAT_SERVER1 = $statOK1 ]
+then
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server1_stat  -o 1
+else
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server1_stat  -o 0
+fi
+
+if [ $STAT_SERVER2 = $statOK2 ]
+then
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server2_stat  -o 1
+else
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server2_stat  -o 0
+fi
+
+if [ $STAT_SERVER3 = $statOK3 ]
+then
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server3_stat  -o 1
+else
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server3_stat  -o 0
+fi
+
+if [ $STAT_SERVER4 = $statOK4 ]
+then
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server4_stat  -o 1
+else
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server4_stat  -o 0
+fi
+
+if [ $STAT_SERVER5 = $statOK5 ]
+then
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server5_stat  -o 1
+else
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server5_stat  -o 0
+fi
+
+if [ $STAT_SERVER6 = $statOK6 ]
+then
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server6_stat  -o 1
+else
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server6_stat  -o 0
+fi
+
+if [ $STAT_SERVER7 = $statOK7 ]
+then
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server7_stat  -o 1
+else
+/usr/bin/zabbix_sender -z $zabbixserver -p 10051 -s $HOST -k server7_stat  -o 0
+fi
